@@ -1,6 +1,3 @@
-QUERY_WELCOME_TEXT = "Welcome to Henry's Query Engine.\nEnter a query below. "
-
-
 class QueryEngine:
     def __init__(self, dictionary):
         self.dictionary = dictionary
@@ -13,7 +10,7 @@ class QueryEngine:
 
 
 def menu(query_engine):
-    print(QUERY_WELCOME_TEXT)
+    print("Welcome to Henry's Query Engine.\nEnter a query below. ")
     while True:
         query = input("> ")
         if query is not None:
