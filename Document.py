@@ -1,8 +1,11 @@
 class Document:
-    def __init__(self, _id):
-        self._id = _id
-        self.terms = [] # list of tuples (term, tf)
+    def __init__(self, title, terms):
+        self.title = title,
+        self.terms = terms # list of tuples (term, tf)
 
-    def add_term(self, term):
-        if term in self.terms:
-            self.terms[term][1] += 1
+    def __str__(self):
+        print(type(self.title))
+        _str = str(self.title)
+        for elem in self.terms:
+            _str += str(elem)
+        return _str
