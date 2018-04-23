@@ -13,13 +13,13 @@ class Database:
             terms = next(reader)[1:]
             for row in reader:
                 # create tuples of (term, term-frequency)
-                tpairs = list(zip(terms[1:],row[1:]))
-                newDoc = Document(title=row[0], terms=tpairs)
+                tpairs = dict(zip(terms[1:],[int(x) for x in row[1:]]))
+                newDoc = Document(title=row[0].replace('"',''), terms=tpairs)
                 documents.append(newDoc)
         return documents
 
     def get_dictionary(self):
-        return [x[0] for x in self.documents[0].terms]
+        return [x for x in self.documents[0].terms]
 
     def __str__(self):
         _str = "-- DATABASE --"

@@ -1,10 +1,11 @@
 class Document:
     def __init__(self, title, terms):
-        self.title = title,
-        self.terms = terms # list of tuples (term, tf)
+        self.title = str(title)
+        self.terms = terms
+        self.num_terms = sum(self.terms.values())
+        self.num_total_terms = len(self.terms.keys())
 
     def __str__(self):
-        print(type(self.title))
         _str = str(self.title)
         for elem in self.terms:
             _str += str(elem)
