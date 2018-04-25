@@ -1,17 +1,3 @@
-"""
-Leader / Follower
-
-n = group_count = sqrt(num_docs)
-
-leaders can be picked at random (pick n leaders)
-
-once you pick the leaders, 
-
-compute the distance between the distance of the remaining docs and relate 
-them to the closest leader
-
-distance = cosine similarity
-"""
 import numpy as np
 import math
 import random

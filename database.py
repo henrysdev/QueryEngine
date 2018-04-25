@@ -10,13 +10,20 @@ class Database:
         with open(path) as file_in:
             reader = csv.reader(file_in, skipinitialspace=True, quotechar="'")
             # grab all the term headers from the first row (exclude the first one at is a label)
-            terms = next(reader)[1:]
+            terms = next(reader)[2:]
             for row in reader:
                 # create tuples of (term, term-frequency)
-                tpairs = dict(zip(terms[1:],[int(x) for x in row[1:]]))
-                newDoc = Document(title=row[0].replace('"',''), terms=tpairs)
+                tpairs = dict(zip(terms[2:],[int(x) for x in row[2:]]))
+                newDoc = Document(title=row[0].replace('"',''), 
+                                  url=row[1].replace('"',''), 
+                                  terms=tpairs)
                 documents.append(newDoc)
         return documents
+
+    def get_url(self, doc_title):
+        for i, elem in enumerate(self.documents):
+            if elem.title == doc_title:
+                return elem.url
 
     def get_dictionary(self):
         return [x for x in self.documents[0].terms]
