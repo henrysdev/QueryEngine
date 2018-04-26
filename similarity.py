@@ -1,11 +1,10 @@
-import numpy as np
 import math
+import numpy as np
 import random
 
 class Similarity:
     def __init__(self, documents):
         self.documents = documents
-
 
     def has_term(self, query_term):
         """ finds and returns documents containing given term """
@@ -15,11 +14,9 @@ class Similarity:
                 docs_with_term.append(doc)
         return docs_with_term
 
-
     def distance(self, a, b, ax=0):
         """ calculates euclidean distance between two vectors """
         return np.linalg.norm(a - b, axis=ax)
-
 
     def k_means_cluster(self, k):
         """ generates k-means cluster groups """
@@ -49,12 +46,13 @@ class Similarity:
 
         print("\nClusters (leader id -> [follower id | score])")
         for lead_id in cluster_map:
-            print(lead_id)
+            print("Cluster w/ Leader id:", lead_id)
             followers = cluster_map[lead_id]
+            if not followers:
+                print("(none)")
             for f_pair in followers:
                 print("[", f_pair[0], "|", f_pair[1], "]")
             print("-------------------------------")
-
 
     def cosine_scores(self, query_terms):
         """ calculates tf-idf scores using ntc.nnn weighting """

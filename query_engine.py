@@ -1,4 +1,5 @@
 import sys
+
 from database import Database
 from similarity import Similarity
 
@@ -7,13 +8,11 @@ class QueryEngine:
         self.database = Database(path_to_tfcsv)
         self.dictionary = self.database.get_dictionary()
         self.similarity = Similarity(self.database.documents)
-        # limit to k = 6 ranked results by default
         self.rank_limit = 6
-        # limit to 5 clusters by default
         self.num_leaders = 5
+        self.similarity.k_means_cluster(self.num_leaders)
 
     def handle_query(self, query):
-        self.similarity.k_means_cluster(self.num_leaders)
         query = query.lower()
         query_terms = query.split()
         if query_terms[0] == "stop":
@@ -21,7 +20,6 @@ class QueryEngine:
         query_terms = [x for x in query_terms if x in self.dictionary]
         if not query_terms:
             print("No results for the given query")
-        """
         ranked_results = sorted(self.similarity.cosine_scores(query_terms), 
                                 key=lambda x: x[1], reverse=True)
         print("\nQUERY RESULTS: ")
@@ -37,7 +35,6 @@ class QueryEngine:
                     doc_url,cos_score))
                 print("--------------------------------------")
         print()
-        """
 
 
 def menu(query_engine):
