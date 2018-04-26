@@ -7,8 +7,13 @@ class QueryEngine:
         self.database = Database(path_to_tfcsv)
         self.dictionary = self.database.get_dictionary()
         self.similarity = Similarity(self.database.documents)
+        # limit to k = 6 ranked results by default
+        self.rank_limit = 6
+        # limit to 5 clusters by default
+        self.num_leaders = 5
 
     def handle_query(self, query):
+        self.similarity.k_means_cluster(self.num_leaders)
         query = query.lower()
         query_terms = query.split()
         if query_terms[0] == "stop":
@@ -16,19 +21,30 @@ class QueryEngine:
         query_terms = [x for x in query_terms if x in self.dictionary]
         if not query_terms:
             print("No results for the given query")
-        #self.similarity.determine_leaders()
+        """
         ranked_results = sorted(self.similarity.cosine_scores(query_terms), 
                                 key=lambda x: x[1], reverse=True)
         print("\nQUERY RESULTS: ")
         print("--------------------------------------")
         for i, res in enumerate(filter(lambda x: x[1] > 0, ranked_results)):
-            print("[{}] {}\n(cosine_score={})".format(i+1,res[0],res[1]))
-            print("--------------------------------------")
+            if i < self.rank_limit:
+                doc_title = res[0]
+                cos_score = res[1]
+                doc_url = self.database.get_url(doc_title)
+                print("[{}] {}\n{}\n(cosine_score={})".format(
+                    i+1,
+                    doc_title,
+                    doc_url,cos_score))
+                print("--------------------------------------")
         print()
+        """
 
 
 def menu(query_engine):
-    print("Welcome to Henry's Query Engine.\nEnter a query below. ")
+    print("\n*******************************************************")
+    print("          Welcome to Henry's Query Engine.")
+    print("*******************************************************")
+    print("\nEnter a query below. ")
     while True:
         query = input("> ")
         if query is not None:

@@ -1,17 +1,3 @@
-"""
-Leader / Follower
-
-n = group_count = sqrt(num_docs)
-
-leaders can be picked at random (pick n leaders)
-
-once you pick the leaders, 
-
-compute the distance between the distance of the remaining docs and relate 
-them to the closest leader
-
-distance = cosine similarity
-"""
 import numpy as np
 import math
 import random
@@ -20,49 +6,58 @@ class Similarity:
     def __init__(self, documents):
         self.documents = documents
 
+
     def has_term(self, query_term):
+        """ finds and returns documents containing given term """
         docs_with_term = []
         for doc in self.documents:
             if query_term in doc.terms:
                 docs_with_term.append(doc)
         return docs_with_term
 
-    def cosine_similarity(self, doc1, doc2):
-        scores = []
-        doc_matrix = np.zeros((doc2.num_total_terms))
-        for q, qterm in enumerate(doc2.terms):
-            idf = 1 + math.log(len(self.documents) / len(self.has_term(qterm)))
-            tf = doc1.terms[qterm]
-            normalized_tf = tf / doc1.num_terms
-            weighted = normalized_tf * idf
-            doc_matrix[q] = weighted
-        score = np.square(doc_matrix)
-        score = math.sqrt(np.sum(score))
 
-        return score
+    def distance(self, a, b, ax=0):
+        """ calculates euclidean distance between two vectors """
+        return np.linalg.norm(a - b, axis=ax)
 
-    def determine_leaders(self):
-        # int(math.sqrt(len(self.documents)))
-        leaders = [random.choice(self.documents) for x in range(
-            int(math.sqrt(len(self.documents))))]
+
+    def k_means_cluster(self, k):
+        """ generates k-means cluster groups """
+        leaders = random.sample(self.documents, k)
+        cluster_map = {}
+        print("\nLeaders (doc id | doc title)")
+        for l in leaders:
+            print(l._id, "|", l.title)
+            cluster_map[l._id] = []
+
+        print("\nFollowers (doc id | doc title)")
         followers = [x for x in self.documents if x not in leaders]
         for f in followers:
-            min_dist = 2
-            for l in leaders:
-                dist = self.cosine_similarity(f, l)
-                if dist < min_dist:
-                    print("new min dist: ", dist)
-                    print("L: {}".format(l.title))
-                    min_dist = dist
-                else:
-                    print("nope")
-            print()
+            print(f._id, "|", f.title)
 
-        print("leaders: ", leaders)
-        print("followers: ", followers)
-        return leaders
+        for f in followers:
+            dists = []
+            for l in leaders:
+                dist = self.distance(f.vect, l.vect)
+                dists.append( (l._id, dist) )
+            _min = dists[0]
+            for d in dists:
+                #print("f:", f._id, "d:", d)
+                if d[1] < _min[1]:
+                    _min = d
+            cluster_map[_min[0]].append((f._id, _min[1]))
+
+        print("\nClusters (leader id -> [follower id | score])")
+        for lead_id in cluster_map:
+            print(lead_id)
+            followers = cluster_map[lead_id]
+            for f_pair in followers:
+                print("[", f_pair[0], "|", f_pair[1], "]")
+            print("-------------------------------")
+
 
     def cosine_scores(self, query_terms):
+        """ calculates tf-idf scores using ntc.nnn weighting """
         scores = []
         doc_matrix = np.zeros((len(self.documents),len(query_terms)))
         # container for docs who have had the 0.25 title term bonus added
