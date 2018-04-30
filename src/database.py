@@ -8,7 +8,9 @@ class Database:
         self.id_counter = 0
         self.documents = self.read_in_data(path)
 
+
     def read_in_data(self, path):
+        """ read in document data from csv file """
         documents = []
         with open(path) as file_in:
             reader = csv.reader(file_in, skipinitialspace=True, quotechar="'")
@@ -25,16 +27,20 @@ class Database:
                                   _id=self.id_counter)
                 documents.append(newDoc)
                 self.id_counter += 1
-
         return documents
 
+
     def get_url(self, doc_title):
+        """ retrieve corresponding url for given document id """
         for i, elem in enumerate(self.documents):
             if elem.title == doc_title:
                 return elem.url
 
+
     def get_dictionary(self):
+        """ returns all unique terms in data set """
         return [x for x in self.documents[0].terms]
+
 
     def __str__(self):
         _str = "-- DATABASE --"

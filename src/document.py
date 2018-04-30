@@ -10,6 +10,7 @@ class Document:
         self.vect = vect
         self._id = _id
 
+
     def __str__(self):
         _str = str(self.title)
         _str += str(self.url)
