@@ -12,18 +12,26 @@ class QueryEngine:
         self.num_leaders = 5
         self.similarity.k_means_cluster(self.num_leaders)
 
+
     def handle_query(self, query):
+        """ process user search query """
         query = query.lower()
         query_terms = query.split()
+
         if query_terms[0] == "stop":
             exit(0)
+        # only include terms that are in the data set 
         query_terms = [x for x in query_terms if x in self.dictionary]
         if not query_terms:
             print("No results for the given query")
+
+        # generate ranked results and print them to console
         ranked_results = sorted(self.similarity.cosine_scores(query_terms), 
                                 key=lambda x: x[1], reverse=True)
         print("\nQUERY RESULTS: ")
         print("--------------------------------------")
+
+        # include top k results that have a score > 0
         for i, res in enumerate(filter(lambda x: x[1] > 0, ranked_results)):
             if i < self.rank_limit:
                 doc_title = res[0]
@@ -38,6 +46,7 @@ class QueryEngine:
 
 
 def menu(query_engine):
+    """ main search engine user input loop """
     print("\n*******************************************************")
     print("          Welcome to Henry's Query Engine.")
     print("*******************************************************")
@@ -45,6 +54,7 @@ def menu(query_engine):
     while True:
         query = input("> ")
         if query is not None:
+            # send entered query to be processed
             query_engine.handle_query(query)
 
 
