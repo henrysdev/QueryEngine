@@ -1,11 +1,5 @@
 Henry Warren 2018
 
-*******************************************
-*                                         *
-*    CSE 5337 Project 2 - Query Engine    *
-*                                         *
-*******************************************
-
 [OVERVIEW]
  This program has the following execution flow:
     1. Reads in and parses CSV data from provided data file 
